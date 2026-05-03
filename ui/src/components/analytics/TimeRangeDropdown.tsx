@@ -7,6 +7,8 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
+import { InputTime } from "../ui/datetimepicker";
+
 
 export type QuickRangeKey = "15m" | "1h" | "6h" | "24h" | "7d" | "30d";
 
@@ -118,6 +120,8 @@ export default function TimeRangeDropdown({
   onCustomRangeApply,
 }: TimeRangeDropdownProps) {
   const [isOpen, setIsOpen] = React.useState(false);
+  const [showStartCalendar, setShowStartCalendar] = React.useState(false);
+  const [showEndCalendar, setShowEndCalendar] = React.useState(false);
   const [customStartInput, setCustomStartInput] = React.useState<string>(
     toUtcInputValue(new Date(value.startAt)),
   );
@@ -220,11 +224,18 @@ export default function TimeRangeDropdown({
                 <input
                   type="datetime-local"
                   lang="en-US"
+                  data-ref="start-input"
                   value={customStartInput}
                   max={customEndInput || undefined}
                   onChange={(event) => setCustomStartInput(event.target.value)}
-                  className="h-9 w-full rounded-md border border-white/[0.1] bg-[#0c1222] px-2 text-xs text-zinc-200 outline-none transition-colors focus:border-sky-500/50"
+                  className="h-9 w-full rounded-md border border-white/[0.1] bg-[#0c1222] appearance-none px-2 text-xs text-zinc-200 cursor-pointer outline-none transition-colors focus:border-sky-500/50"
+                  onClick={() => {
+                    // e.currentTarget.showPicker();
+                    setShowStartCalendar((prev) => !prev);
+                    setShowEndCalendar(false);
+                  }}
                 />
+                {showStartCalendar && <InputTime />}
               </div>
               <div className="space-y-1.5">
                 <label className="block text-xs font-medium text-zinc-400">
@@ -232,12 +243,18 @@ export default function TimeRangeDropdown({
                 </label>
                 <input
                   type="datetime-local"
+                  data-ref="end-input"
                   lang="en-US"
                   value={customEndInput}
                   min={customStartInput || undefined}
                   onChange={(event) => setCustomEndInput(event.target.value)}
-                  className="h-9 w-full rounded-md border border-white/[0.1] bg-[#0c1222] px-2 text-xs text-zinc-200 outline-none transition-colors focus:border-sky-500/50"
+                  className="h-9 w-full rounded-md border border-white/[0.1] bg-[#0c1222] appearance-none px-2 text-xs text-zinc-200 cursor-pointer outline-none transition-colors focus:border-sky-500/50"
+                  onClick={() => {
+                    setShowEndCalendar((prev) => !prev);
+                    setShowStartCalendar(false);
+                  }}
                 />
+                {showEndCalendar && <InputTime />}
               </div>
             </div>
             <div className="mt-3 flex items-center justify-between gap-2 border-t border-white/[0.06] pt-2.5">

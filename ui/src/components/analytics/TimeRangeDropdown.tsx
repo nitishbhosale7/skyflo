@@ -166,29 +166,33 @@ export default function TimeRangeDropdown({
   const [customError, setCustomError] = React.useState<string | null>(null);
 
   React.useEffect(() => {
-    setCustomRange({
-      from: new Date(value.startAt),
-      to: new Date(value.endAt),
-    });
+    setCustomStartInput(toUtcInputValue(new Date(value.startAt)));
+    setCustomEndInput(toUtcInputValue(new Date(value.endAt)));
     setCustomError(null);
   }, [value.startAt, value.endAt]);
 
   const applyCustomRange = () => {
-    if (!customRange?.from || !customRange?.to) {
+    if (!customStartInput || !customEndInput) {
       setCustomError("Select both start and end time.");
       return;
     }
 
-    const start = customRange.from;
-    const end = customRange.to;
-    
+    const startIso = parseUtcInputToIso(customStartInput);
+    const endIso = parseUtcInputToIso(customEndInput);
+    if (!startIso || !endIso) {
+      setCustomError("Enter a valid date and time.");
+      return;
+    }
+
+    const start = new Date(startIso);
+    const end = new Date(endIso);
     if (start >= end) {
       setCustomError("Start time must be before end time.");
       return;
     }
 
     setCustomError(null);
-    onCustomRangeApply(start.toISOString(), end.toISOString(), "UTC");
+    onCustomRangeApply(startIso, endIso, "UTC");
     setIsOpen(false);
   };
 

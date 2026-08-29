@@ -18,7 +18,7 @@ interface DatePickerWithRangeProps extends React.HTMLAttributes<HTMLDivElement> 
   setDate: (date: DateRange | undefined) => void;
 }
 
-function GlassWrapper({ children }: { children: React.ReactNode }) {
+export function GlassWrapper({ children }: { children: React.ReactNode }) {
   return (
     <div className="lg-wrapper">
       <div className="lg-effect" />

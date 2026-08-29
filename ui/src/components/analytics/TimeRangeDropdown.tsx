@@ -191,6 +191,12 @@ export default function TimeRangeDropdown({
       return;
     }
 
+    const now = new Date();
+    if (start > now || end > now) {
+      setCustomError("Select a time range that is not in the future.");
+      return;
+    }
+
     setCustomError(null);
     onCustomRangeApply(startIso, endIso, "UTC");
     setIsOpen(false);
@@ -407,8 +413,16 @@ export default function TimeRangeDropdown({
                         }
                         onSelect={handleEndDaySelect}
                         disabled={(day) => {
-                          if (customStartInput && day < new Date(customStartInput)) {
-                            return true;
+                          if (customStartInput) {
+                            const start = new Date(customStartInput);
+                            const startOfStartDay = new Date(
+                              start.getFullYear(),
+                              start.getMonth(),
+                              start.getDate(),
+                            );
+                            if (day < startOfStartDay) {
+                              return true;
+                            }
                           }
                           if (day > new Date()) {
                             return true;

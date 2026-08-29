@@ -16,12 +16,27 @@ export function InputTime() {
 
   const handleTimeChange: ChangeEventHandler<HTMLInputElement> = (e) => {
     const time = e.target.value;
+    if (!time) {
+      return;
+    }
+
+    const [hours, minutes] = time.split(":").map((str) => parseInt(str, 10));
+    const isValidTime =
+      Number.isFinite(hours) &&
+      Number.isFinite(minutes) &&
+      hours >= 0 &&
+      hours <= 23 &&
+      minutes >= 0 &&
+      minutes <= 59;
+    if (!isValidTime) {
+      return;
+    }
+
     if (!selected) {
       // Defer composing a full Date until a day is picked.
       setTimeValue(time);
       return;
     }
-    const [hours, minutes] = time.split(":").map((str) => parseInt(str, 10));
     // Compose a new Date using the current day plus the chosen time.
     const newSelectedDate = setHours(setMinutes(selected, minutes), hours);
     setSelected(newSelectedDate);
